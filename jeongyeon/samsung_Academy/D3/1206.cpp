@@ -17,6 +17,7 @@ int main(void){
         }
 
         for(int i=2; i<Tcase-2; i++){
+            //왼쪽 오른쪽 2칸씩 arr[i]보다 작은지 확인
             if(arr[i] > arr[i-1] && arr[i] > arr[i-2] && arr[i] > arr[i+1] && arr[i] > arr[i+2]){
                 int temp;
                 temp = max(arr[i-2], max(arr[i-1], max(arr[i+1], arr[i+2])));
