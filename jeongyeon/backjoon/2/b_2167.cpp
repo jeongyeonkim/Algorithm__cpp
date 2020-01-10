@@ -14,7 +14,7 @@ int main(){
             int input;
             cin >> input;
             dp[i][j] = dp[i-1][j] + input;
-        }
+        } 
     }
     cin >> K;
 
