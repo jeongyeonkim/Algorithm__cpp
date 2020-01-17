@@ -19,6 +19,7 @@ int main(){
         if(j == line.size()){
             line.push_back(a);
         }else{
+            // 자리 값 바꿈.
             line[j] = a;
         }
     }
