@@ -18,4 +18,4 @@ int main(){
     }
 
     cout << candy[N][M];
-}
+}  

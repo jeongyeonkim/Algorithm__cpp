@@ -29,7 +29,11 @@ int main(){
     fibo[1] = 1;
 
     for(int i=0; i<n-1; i++){
-        fibo[2] = (fibo[0] + fibo[1])%K;
+        if(fibo[0]+fibo[1] > K){
+            fibo[2] = (fibo[0] + fibo[1])%K;
+        }else{
+            fibo[2] = fibo[0] + fibo[1];
+        }
         fibo[0] = fibo[1];
         fibo[1] = fibo[2];
     }
