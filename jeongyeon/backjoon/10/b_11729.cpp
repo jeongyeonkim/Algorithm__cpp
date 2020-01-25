@@ -1,24 +1,29 @@
+// 하노이 탑 이동 순서.
 #include <iostream>
-    #include <vector>
-    using namespace std;
-    vector<pair<int, int>> answer;
-    void move(int count, int start, int temp, int goal) {
-    	if(count == 1) {
-            answer.push_back(make_pair(start, goal));
-            return;
-        }
-        move(count-1, start, goal, temp); // start->temp
-        answer.push_back(make_pair(start, goal));
-        move(count-1, temp, start, goal); // temp->goal
+#include <vector>
+using namespace std;
+int n;
+vector<pair<int, int> > output;
+
+void hanoi(int cnt, int start, int temp, int end){
+    if(cnt == 1){
+        output.push_back(make_pair(start, end));
+        return;
     }
-    
-    int main() {
-       int n;
-       cin >> n;
-       move(n, 1, 2, 3);
-       cout << answer.size() << "\n";
-       for(auto v : answer) {
-           cout << v.first << " " << v.second << "\n";
-       }
-       return 0;
+
+    hanoi(cnt-1, start, end, temp);
+    output.push_back(make_pair(start, end));
+    hanoi(cnt-1, temp, start, end);
+}
+
+int main(){
+    ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+    cin >> n;
+
+    hanoi(n, 1, 2, 3);
+
+    cout << output.size() << "\n";
+    for(int i=0; i<output.size(); i++){
+        cout << output[i].first << " " << output[i].second << "\n";
     }
+}

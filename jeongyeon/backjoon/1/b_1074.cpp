@@ -1,27 +1,30 @@
+// Z
 #include <iostream>
 #include <cmath>
 using namespace std;
 int N, r, c, cnt;
 
-void Z(int row, int col, int z){
-    if(row == r && col == c){
+void Z(int a, int b, int size){
+    if(a == r && b == c){
         cout << cnt;
         return;
     }
-    if(r < row + z && r >= row && c < col + z && c >= col){
-        Z(row, col, z/2);
-        Z(row, col + z/2, z/2);
-        Z(row + z/2, col, z/2);
-        Z(row + z/2, col + z/2, z/2);
+
+    int half = size/2;
+
+    if(r < a+size && r >= a && c < b+size && c >= b){
+        Z(a, b, half);
+        Z(a, b+half, half);
+        Z(a+half, b, half);
+        Z(a+half, b+half, half);
     }else{
-        cnt += z*z;
+        cnt += size*size;
     }
 }
 
-int main(void){
-    ios_base::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
-
+int main(){
+    ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
     cin >> N >> r >> c;
-    Z(0,0, pow(2,N));
+
+    Z(0, 0, pow(2,N));
 }
