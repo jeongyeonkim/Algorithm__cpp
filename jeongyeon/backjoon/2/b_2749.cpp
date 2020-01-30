@@ -18,24 +18,40 @@
 
 // 시간 초과
 #include <iostream>
-#define K 1000000
+#include <vector>
 using namespace std;
-long long n;
-long long fibo[3];
 
-int main(){
-    ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+int fibo(int n);
+
+int main()
+{   
+    int n;
     cin >> n;
-    fibo[1] = 1;
+    cout << fibo(n) << endl;
+    return 0;
+}
 
-    for(int i=0; i<n-1; i++){
-        if(fibo[0]+fibo[1] > K){
-            fibo[2] = (fibo[0] + fibo[1])%K;
-        }else{
+int fibo(int n) {
+    int answer;
+
+    vector<int> fibo; // 배열을 만든다
+    fibo.push_back(0); // 0번째는 0
+    fibo.push_back(1); // 1번째는 1인 피보나치이다.
+
+    if (n == 0) { return 0; } // fibo(0) 은 0 이라고 주어짐.
+    else if (n == 1) { return 1; } // fibo(0) 은 1 이라고 주어짐.
+    else {
+        for (int i = 2; i <= n; i++)
+        {
             fibo[2] = fibo[0] + fibo[1];
+            if (fibo[2] > 1000000)
+            {
+                fibo[2] = fibo[2] % 1000000;
+            }
+            fibo[0] = fibo[1]; // 다음 연산을 위해 한 칸씩 앞으로 옮긴다
+            fibo[1] = fibo[2]; // 2번 째에는 다음 연산의 값이 들어가야 하므로.
         }
-        fibo[0] = fibo[1];
-        fibo[1] = fibo[2];
+        answer = fibo[2];
+        return answer;
     }
-    cout << fibo[2];
 }
