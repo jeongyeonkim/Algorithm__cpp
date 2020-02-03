@@ -1,11 +1,12 @@
 // 동전
 #include <iostream>
-#include <string.h>
+#include <cstring>
 using namespace std;
 int T, N, M;
-int coin[20], result[10001];
+int coin[20], result[10001], output[10];
 
 int cntCoin(){
+    memset(result, 0, sizeof(result));
     result[0]=1;
 
     for(int i=0; i<=N; i++){
@@ -24,9 +25,12 @@ int main(){
     for(int i=0; i<T; i++){
         cin >> N;
         memset(coin, 0, sizeof(coin));
-        for(int j=0; j<N; j++){ cin >> coin[i]; }
+        for(int j=0; j<N; j++){ cin >> coin[j]; }
         cin >> M;
+        output[i] = cntCoin();
+    }
 
-        cout << cntCoin() << "\n";
+    for(int i=0; i<T; i++){
+        cout << output[i] << "\n";
     }
 }
