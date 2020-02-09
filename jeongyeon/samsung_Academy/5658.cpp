@@ -64,7 +64,7 @@ int main(int argc, char** argv){
         
         Decimal(num[K-1]);
 
-        cout << "#" << test_case << " " << result << "\n"; 
+        cout << "#" << test_case << " " << result << "\n";
         arr.clear();
         num.clear();
         maxNum = 0;
