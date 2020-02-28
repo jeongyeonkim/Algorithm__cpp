@@ -13,6 +13,7 @@ int main(int argc, char** argv){
     for(test_case = 1; test_case <= T; test_case++){
         cin >> K;
         cin >> word;
+        // 한칸씩 시작점 뒤로 미룸.
         for(int i=0; i<word.length(); i++){
             string temp = "";
             for(int j=i; j<word.length(); j++){
@@ -20,6 +21,8 @@ int main(int argc, char** argv){
             }
             arr.push_back(temp);
         }
+
+        // 사전순으로 정렬
         sort(arr.begin(), arr.end());
         
         cout << "#" << test_case << " " << arr[K-1] << "\n";
