@@ -9,6 +9,7 @@ string dir[8] = {"R", "L", "B", "T", "RT", "LT", "RB", "LB"};
 int dx[8] = {0, 0, 1, -1, -1, -1, 1, 1};
 int dy[8] = {1, -1, 0, 0, 1, -1, 1, -1};
 
+// 범위 내 확인 함수
 bool checkMap(int x, int y){
     if(x < 0 || y < 0 || x >=8 || y >=8){ return false; }
     return true;
@@ -20,6 +21,7 @@ void solve(){
 
     if(!checkMap(nxKing, nyking)){ return; }
 
+    // 이동하려는 위치에 돌이 있을 경우
     if(nxKing == stone.first && nyking == stone.second){
         int nxStone = stone.first + dx[idx];
         int nyStone = stone.second + dy[idx];
@@ -37,6 +39,8 @@ void solve(){
 
 int main(void){
     cin >> K >> S;
+    // first 행 좌표, second 열 좌표
+    // 행 좌표는 8~1을 0~7로 바꿈
     king.first = K[1] - '0';
     king.first = 8 - king.first;
     king.second = K[0] - '0' - 17;
@@ -53,7 +57,7 @@ int main(void){
         }
         solve();
     }
-
+    
     char kingX = king.second + '0' + 17;
     cout << kingX << 8-king.first << "\n";
     char stoneX = stone.second + '0' + 17;
