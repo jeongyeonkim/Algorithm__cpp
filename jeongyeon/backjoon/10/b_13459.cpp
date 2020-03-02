@@ -1,5 +1,6 @@
 // 구슬 탈출2
 #include <iostream>
+#include <queue>
 #include <algorithm>
 using namespace std;
 int N, M, result;
@@ -10,6 +11,17 @@ int dx[4] = {1, -1, 0, 0};
 int dy[4] = {0, 0, 1, -1};
 int oppositeDir[4] = {1, 0, 3, 2};
 
+typedef struct RED{
+    int x;
+    int y;
+    int cnt;
+    
+};
+
+typedef struct BLUE{
+    int x;
+    int y;
+};
 
 int main(void){
     ios_base::sync_with_stdio(false); cin.tie(0);
@@ -29,6 +41,12 @@ int main(void){
             }
         }
     }
+
+    queue<RED> queR;
+    queue<BLUE> queB;
+    queR.push({red.first, red.second, 0});
+
+
     
     cout << result;
     return 0;
