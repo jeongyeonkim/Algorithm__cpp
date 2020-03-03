@@ -1,4 +1,4 @@
-// 구슬 탈출2
+// 구슬 탈출
 #include <iostream>
 #include <queue>
 #include <algorithm>
@@ -15,7 +15,7 @@ typedef struct RED{
     int x;
     int y;
     int cnt;
-    
+
 };
 
 typedef struct BLUE{
