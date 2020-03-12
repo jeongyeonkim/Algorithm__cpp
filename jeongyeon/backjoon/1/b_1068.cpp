@@ -2,17 +2,17 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-int N, rootNode, result, removeNode;
-vector<int> child[51];
+int N, rootNode, result, removeNode, p;
+vector<int> child[51], parent[51];
 
-void tree(int idx){
-    if(idx == removeNode){ return; }
-    if(child[idx].empty()){ result++; return; }
+int tree(int idx){
+   int cnt = 0;
+   if(child[idx].size() == 0){ return 1; }
 
-    for(int i=0; i<child[idx].size(); i++){
-        if(child[idx][i] == removeNode){  }
-        tree(child[idx][i]);
-    }
+   for(int i=0; i<child[idx].size(); i++){
+       cnt += tree(child[idx][i]);
+   }
+   return cnt;
 }
 
 int main(void){
@@ -21,12 +21,17 @@ int main(void){
     for(int i=0; i<N; i++){
         int a = 0; cin >> a;
         if(a == -1){ rootNode = i; }
-        else{ child[a].push_back(i); }
+        else{
+            child[a].push_back(i);
+            parent[i].push_back(a);
+        }
     }
     cin >> removeNode;
-    child[removeNode].clear();
+    if(!parent[removeNode].size()){ cout << 0; return 0; }
+    p = parent[removeNode][0];
+    for(int i=0; i<child[p].size(); i++){
+        if(child[p][i] == removeNode){ child[p].erase(child[p].begin()+i); break; }
+    }
 
-    if(rootNode != removeNode){ tree(rootNode); }
-
-    cout << result << "\n";
+    cout << tree(rootNode) << "\n";
 }

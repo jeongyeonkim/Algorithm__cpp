@@ -11,6 +11,7 @@ int dy[4] = {0, 0, 1, -1};
 int arr[9][9], copyArr[9][9], check[9][9];
 vector<pair <int, int> > area, virus;
 
+// 안전지역 count
 void countArea(){
     int cnt = 0;
     for(int i=0; i<N; i++){
@@ -18,7 +19,6 @@ void countArea(){
             if(copyArr[i][j] == 0){ cnt++; }
         }
     }
-    // 최대 안전지역 저장
     result = max(result, cnt);
 }
 
@@ -93,7 +93,6 @@ int main(void){
         }
         
     }
-    
     cout << result;
     return 0;
 }
