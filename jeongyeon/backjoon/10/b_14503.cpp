@@ -4,16 +4,9 @@ using namespace std;
 int N, M, r, c, d, cnt;
 int arr[51][51];
 bool clean;
-// 북, 동, 남, 서 
-int leftD1[4] = {0, -1, 0, 1};
-int leftD2[4] = {-1, 0, 1, 0};
-int backD1[4] = {1, 0, -1, 0};
-int backD2[4] = {0, -1, 0, 1};
-
-int turn(int dir){
-    if(dir == 0) return 3;
-    else return dir-1;
-}
+// 북, 동, 남, 서
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, 1, 0, -1};
 
 int main(){
     ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
@@ -26,37 +19,40 @@ int main(){
     if(arr[r][c] == 0){
         cnt++;
         arr[r][c] = -1;
-    }  
+    }
 
     while(true){
         clean = false;
-        int lx = r + leftD1[d];
-        int ly = c + leftD2[d];
-        int bx = r + backD1[d];
-        int by = c + backD2[d];
+        int lx = r + dx[(d+3)%4];
+        int ly = c + dy[(d+3)%4];
+        int bx = r + (dx[d])*(-1);
+        int by = c + (dy[d])*(-1);
 
         for(int i=0; i<4; i++){
-            if(lx < N && lx >= 0 && ly < M && ly >= 0 && arr[r+leftD1[i]][c+leftD2[i]] == 0){
+            // 범위 내에 있으면서 청소 가능한 구역 있으면 clean = true로 바꿈.
+            if(lx < N && lx >= 0 && ly < M && ly >= 0 && arr[r+dx[(i+3)%4]][c+dy[(i+3)%4]] == 0){
                 clean = true;
             }
         }
 
         if(clean){
+            // 왼쪽이 청소 가능할 경우
             if(arr[lx][ly] == 0){
                 cnt++;
-                d = turn(d);
+                d = (d+3)%4;
                 r = lx;
                 c = ly;
                 arr[r][c] = -1;
-            }else{
-                d = turn(d);
+            }else{ // 왼쪽이 청소가 되어있거나 다른 방향이 청소 가능하나 곳이 있을 경우 방향만 회전
+                d = (d+3)%4;
             }
-        }else{
-            if(arr[bx][by] == 1){ break; }
+        }else{ // 청소가능한 곳이 없거나 벽인 경우
+            if(arr[bx][by] == 1){ break; } // 후진 가능하지 않는 경우 while문 탈출
             r = bx;
             c = by;
         }
     }
 
     cout << cnt;
+    return 0;
 }
