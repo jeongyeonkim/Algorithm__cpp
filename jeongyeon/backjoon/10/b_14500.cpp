@@ -83,3 +83,101 @@ int main(void){
 
 //     cout << result;
 // }
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int N, M;
+int result = 0;
+int Map[501][501];
+bool Visit[501][501];
+int Move[4][2] = { {0,1},{1,0},{0,-1},{-1,0} };
+vector<pair<int, int>> st;
+
+int fuckyouCheck(int r, int c) {
+	int sum = Map[r][c];
+	int ret = 0;
+	for (int i = 0; i < 4; i++) {
+		int nr = r + Move[i][0];
+		int nc = c + Move[i][1];
+
+		if (nr >= 0 && nr < N && nc >= 0 && nc < M) {
+			sum += Map[nr][nc];
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		int nr = r + Move[i][0];
+		int nc = c + Move[i][1];
+
+		if (nr >= 0 && nr < N && nc >= 0 && nc < M) {
+			ret = max(ret, sum - Map[nr][nc]);
+		}
+		else ret = max(ret, sum);
+	}
+
+	return ret;
+}
+
+void dfs(int depth, int r, int c) {
+	if (depth > 2) {
+		int sum = 0;
+		for (int i = 0; i < st.size(); i++)
+		{
+			sum += Map[st.at(i).first][st.at(i).second];
+		}
+
+		result = max(sum, result);
+		return;
+	}
+
+	result = max(result, fuckyouCheck(r, c));
+
+	for (int i = 0; i < 4; i++)
+	{
+		int nr = r + Move[i][0];
+		int nc = c + Move[i][1];
+
+		if (nr >= 0 && nr < N && nc >= 0 && nc < M && Visit[nr][nc] == false)
+		{
+			st.push_back(make_pair(nr, nc));
+			Visit[nr][nc] = true;
+			dfs(depth + 1, nr, nc);
+			st.pop_back();
+			Visit[nr][nc] = false;
+		}
+	}
+}
+
+int main() 
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+	
+	cin >> N >> M;
+	for (int i = 0; i < N; i++) 
+	{
+		for (int j = 0; j < M; j++)
+		{
+			cin >> Map[i][j];
+		}
+	}
+
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < M; j++)
+		{
+			st.push_back(make_pair(i, j));
+			Visit[i][j] = true;
+			dfs(0, i, j);
+			st.pop_back();
+			Visit[i][j] = false;
+		}
+	}
+
+	cout << result;
+}
