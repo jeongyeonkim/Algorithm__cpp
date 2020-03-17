@@ -1,15 +1,61 @@
 // 테트로미노
 #include <iostream>
 #include <algorithm>
+#include <vector>
 using namespace std;
 int N, M, result;
-int arr[501][501];
+int arr[501][501], visited[501][501];
 int dx[4] = {1, 0, -1, 0};
 int dy[4] = {0, 1, 0, -1};
+vector<pair <int, int> > vec;
+
+int othershape(int x, int y){
+    int sum = arr[x][y];
+    int res = 0;
+
+    for(int i=0; i<4; i++){
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+
+        if(nx < 0 || ny < 0 || nx >= N || ny >= M){ continue; }
+        sum += arr[nx][ny];
+    }
+
+    for(int i=0; i<4; i++){
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+
+        if(nx >= 0 || ny >= 0 || nx < N || ny < M){ res = max(res, sum - arr[nx][ny]); }
+        else{ res = max(res, sum); }
+    }
+    return res;
+}
 
 
-void Tetromino(int x, int y){
+void Tetromino(int x, int y, int depth){
+    if(depth > 2){
+        int sum = 0;
+        for(int i=0; i<vec.size(); i++){ sum += arr[vec[i].first][vec[i].second]; }
+        result = max(result, sum);
+        return;
+    }
 
+    result = max(result, othershape(x, y));
+
+    for(int i=0; i<4; i++){
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+
+        if(nx < 0 || ny < 0 || nx >= N || ny >= M){ continue; }
+        if(!visited[nx][ny]){
+            vec.push_back(make_pair(nx, ny));
+            visited[nx][ny] = 1;
+            Tetromino(nx, ny, depth + 1);
+            visited[nx][ny] = 0;
+            vec.pop_back();
+        }
+
+    }
 }
 
 int main(void){
@@ -20,7 +66,13 @@ int main(void){
     }
 
     for(int i=0; i<N; i++){
-        for(int j=0; j<M; j++){ Tetromino(i, j); }
+        for(int j=0; j<M; j++){
+            vec.push_back(make_pair(i, j));
+            visited[i][j] = 1;
+            Tetromino(i, j, 0);
+            visited[i][j] = 0;
+            vec.pop_back();
+        }
     }
 
     cout << result;
@@ -83,101 +135,3 @@ int main(void){
 
 //     cout << result;
 // }
-
-#include <iostream>
-#include <vector>
-#include <algorithm>
-using namespace std;
-
-int N, M;
-int result = 0;
-int Map[501][501];
-bool Visit[501][501];
-int Move[4][2] = { {0,1},{1,0},{0,-1},{-1,0} };
-vector<pair<int, int>> st;
-
-int fuckyouCheck(int r, int c) {
-	int sum = Map[r][c];
-	int ret = 0;
-	for (int i = 0; i < 4; i++) {
-		int nr = r + Move[i][0];
-		int nc = c + Move[i][1];
-
-		if (nr >= 0 && nr < N && nc >= 0 && nc < M) {
-			sum += Map[nr][nc];
-		}
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		int nr = r + Move[i][0];
-		int nc = c + Move[i][1];
-
-		if (nr >= 0 && nr < N && nc >= 0 && nc < M) {
-			ret = max(ret, sum - Map[nr][nc]);
-		}
-		else ret = max(ret, sum);
-	}
-
-	return ret;
-}
-
-void dfs(int depth, int r, int c) {
-	if (depth > 2) {
-		int sum = 0;
-		for (int i = 0; i < st.size(); i++)
-		{
-			sum += Map[st.at(i).first][st.at(i).second];
-		}
-
-		result = max(sum, result);
-		return;
-	}
-
-	result = max(result, fuckyouCheck(r, c));
-
-	for (int i = 0; i < 4; i++)
-	{
-		int nr = r + Move[i][0];
-		int nc = c + Move[i][1];
-
-		if (nr >= 0 && nr < N && nc >= 0 && nc < M && Visit[nr][nc] == false)
-		{
-			st.push_back(make_pair(nr, nc));
-			Visit[nr][nc] = true;
-			dfs(depth + 1, nr, nc);
-			st.pop_back();
-			Visit[nr][nc] = false;
-		}
-	}
-}
-
-int main() 
-{
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
-	
-	cin >> N >> M;
-	for (int i = 0; i < N; i++) 
-	{
-		for (int j = 0; j < M; j++)
-		{
-			cin >> Map[i][j];
-		}
-	}
-
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < M; j++)
-		{
-			st.push_back(make_pair(i, j));
-			Visit[i][j] = true;
-			dfs(0, i, j);
-			st.pop_back();
-			Visit[i][j] = false;
-		}
-	}
-
-	cout << result;
-}
