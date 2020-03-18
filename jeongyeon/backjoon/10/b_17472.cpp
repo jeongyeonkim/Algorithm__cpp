@@ -85,7 +85,7 @@ int main(void){
             }
         }
     }
-
+    areaNum--;
     for(int i=0; i<N; i++){
         for(int j=0; j<M; j++){
             if(arr[i][j] != 0){ move(i, j, arr[i][j]); }
@@ -96,8 +96,8 @@ int main(void){
         for(int j=1; j<=areaNum; j++){ cout << Area[i][j] << " "; }
         cout << "\n";
     }
-
-    graph(1, 1);
+    
+    graph(1, 1, 0);
 
     if(result == 987654321){ result = -1; }
     cout << result;
