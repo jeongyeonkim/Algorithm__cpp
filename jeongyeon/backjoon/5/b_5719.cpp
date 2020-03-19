@@ -2,16 +2,81 @@
 // 다익스트라 -> BFS -> 다익스트라
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <string.h>
+#include <algorithm>
+#define MAX 501
 using namespace std;
-int N, M, S, D, U, V, P, result;
-vector<pair <int, int> > arr[501], temp[501];
-int visited[501][501];
+int N, M, S, D, U, V, P;
+vector<pair <int, int> > arr[MAX], edge;
+int dist[MAX]; // 최소 거리 저장
+int distParent[MAX]; // 최소거리 부모 모드 저장
+bool check = false;
+
+void removeEdge(){
+    // 중복된 간선은 빼려고 정렬
+    sort(edge.begin(), edge.end());
+    int beforeP = -1, beforeC = -1;
+
+    for(int i=0; i<edge.size(); i++){
+        int idx = 0;
+        int parent = edge[i].first;
+        int child = edge[i].second;
+
+        // 중복된 간선일 경우 continue
+        if(beforeP == parent && beforeC == child){ continue; }
+        else{ beforeP = parent; beforeC = child; }
+        
+        // 삭제할 값 인덱스 구하기
+        for(int j=0; j<arr[parent].size(); j++){
+            if(arr[parent][j].first == child){
+                idx = j;
+                break;
+            }
+        }
+        // 자식 노드 삭제
+        arr[parent].erase(arr[parent].begin() + idx);
+    }
+}
+
+void findPath(){
+    fill(dist, dist+MAX, 1e9);
+    priority_queue<pair <int, int> > que;
+    que.push(make_pair(0, S));
+    dist[S]= 0;
+
+    while (!que.empty()){
+        int cost = (-1)*que.top().first;
+        int node = que.top().second;
+        que.pop();
+        
+        if(arr[node].empty()){ continue; }
+        for(int i=0; i<arr[node].size(); i++){
+            int nextNode = arr[node][i].first;
+            int nextCost = arr[node][i].second;
+
+            if(dist[nextNode] >= dist[node] + nextCost){
+                distParent[nextNode] = node;
+                que.push(make_pair((-1)*dist[nextNode], nextNode));
+
+                if(nextNode == D && !check){ // 최단 거리 구할때 간선 저장
+                    // 최단 거리가 같은게 아니면 이미 저장된 edge 비우기
+                    if(dist[nextNode] > dist[node] + nextCost){ edge.clear(); }
+                    int num = nextNode;
+                    while(num != S){ // 도착점부터 시작점 찾아가면서 지나온곳들 edge에 저장
+                        edge.push_back(make_pair(distParent[num], num));
+                        num = distParent[num];
+                    }
+                }
+                dist[nextNode] = dist[node] + nextCost;
+            }
+        }
+    }   
+}
 
 int main(void){
     ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
     while(true){
-        result = 987654321;
         cin >> N >> M;
         if(!N && !M){ break; }
         cin >> S >> D;
@@ -20,13 +85,20 @@ int main(void){
             arr[U].push_back(make_pair(V, P));
         }
 
+        findPath(); // 최단거리 찾기
+
+        removeEdge(); // 최단 거리에 속하는 간선 삭제
+
+        check = true;
+        findPath(); // 거의 최단 거리 찾기
         
+        if(dist[D] == 1e9){  dist[D] = -1; }
+        cout << dist[D] << "\n";
 
-        if(result == 987654321){ result = -1; }
-        cout << result << "\n";
-
-        for(int i=0; i<=N; i++){ arr[i].clear(); temp[i].clear(); }
-        memset(visited, 0, sizeof(visited));
+        for(int i=0; i<=N; i++){ arr[i].clear(); }
+        edge.clear();
+        memset(distParent, 0, sizeof(distParent));
+        check = false;
     }
 
     return 0;
