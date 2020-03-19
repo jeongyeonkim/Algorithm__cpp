@@ -27,7 +27,6 @@ void wheels(int num, int dir, bool check[5]){
         arr[num].push_back(arr[num].front());
         arr[num].pop_front();
     }
-
 }
 
 int main(void){

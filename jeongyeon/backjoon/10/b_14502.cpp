@@ -53,6 +53,7 @@ void spreadVirus(){
     countArea();
 }
 
+// 3중 for문으로도 해보기 -> 시간 줄어들음
 void makeWall(int cnt){
     // 벽 세개가 세워지면 바이러스 퍼트리고 안전지역 카운트
     if(cnt == 3){

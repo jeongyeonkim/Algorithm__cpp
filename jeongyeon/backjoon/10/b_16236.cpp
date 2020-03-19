@@ -1,98 +1,101 @@
 // 아기 상어
-#include <cstdio>
-#include <cstring>
+#include <iostream>
+#include <string.h>
 #include <queue>
-#define MAX 21
 using namespace std;
-int n, Time;
-bool isEnd;
-int map[MAX][MAX];
-bool check[MAX][MAX];
+int n, t;
+bool eat = true;
+int arr[21][21];
+bool check[21][21];
 // 상좌우하
 int dx[4] = { -1, 0, 0, 1 };
 int dy[4] = { 0, -1, 1, 0 };
-struct shark {
+
+struct shark { // cnt == 먹은 수
 	int r, c, size, cnt= 0;
-    shark(int r, int c){r = r; c = c;}
 }baby;
-bool isBound(int r, int c) {
-	if (r > -1 && c > -1 && r < n && c < n) return true;
-	return false;
-}
-void selectPrey(queue<pair<int, int>> &prey) {
-	int prior_x = n, prior_y = n;
+
+void selectFish(queue<pair<int, int>> &prey) {
+	int X = n, Y = n;
+
 	while (!prey.empty()) {
 		int x = prey.front().first;
 		int y = prey.front().second;
 		prey.pop();
-		if (x < prior_x) {
-			prior_x = x;
-			prior_y = y;
-		}
-		else if (x == prior_x) {
-			if (y < prior_y) {
-				prior_y = y;
-			}
+
+		if(x < X) { X= x; Y = y; }
+		else if(x == X) {
+			if (y < Y) { Y = y; }
 		}
 	}
-	map[baby.r][baby.c] = 0;
-	map[prior_x][prior_y] = 9;
-	baby.r = prior_x;
-	baby.c = prior_y;
+	arr[baby.r][baby.c] = 0;
+	arr[X][Y] = 9;
+	baby.r = X; baby.c = Y;
 	baby.cnt++;
 	if (baby.cnt == baby.size) {
 		baby.size++;
 		baby.cnt = 0;
 	}
 }
-void findPrey(int row, int col) {
-	queue<pair<int, int>> q, prey;
-	q.push({ row, col });
+
+void findFish(int row, int col) {
+	queue<pair<int, int> > q, fish;
+	q.push(make_pair(row, col));
 	memset(check, 0, sizeof(check));
 	check[row][col] = true;
-	int part_time = 0;
+	int partT = 0;
+
 	while (!q.empty()) { // 순회할 때마다 1초 증가
-		part_time++;
+		partT++;
 		int len = q.size();
-		for (int i = 0; i < len; ++i) {
+
+		for(int i=0; i<len; i++){
 			int r = q.front().first;
 			int c = q.front().second;
 			q.pop();
-			for (int j = 0; j < 4; ++j) {
+
+			for(int j=0; j<4; j++){
 				int x = r + dx[j];
 				int y = c + dy[j];
-				if (isBound(x, y) && baby.size >= map[x][y] && !check[x][y]) {
-					if (baby.size > map[x][y] && map[x][y] > 0) {
-						prey.push({ x, y });
+
+				if(x < 0 || y < 0 || x >=n || y >= n){ continue; }
+				if(baby.size >= arr[x][y] && !check[x][y]){
+					// 아기상어 크기보다 작으면 먹을 수 있는 물고기 담는 큐에 넣음
+					if(baby.size > arr[x][y] && arr[x][y] > 0){
+						fish.push(make_pair(x, y));
 					}
 					check[x][y] = true;
-					q.push(shark{ x, y });
+					q.push(make_pair(x, y));
 				}
 			}
 		}
-		if (!prey.empty()) {
-			selectPrey(prey);
-			Time += part_time;
+		if (!fish.empty()) {
+			selectFish(fish);
+			t += partT;
 			return;
 		}
 	}
-	isEnd = true;
+	// 먹이 없으면 false
+	eat = false;
 }
 int main() {
-	scanf("%d", &n);
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
-			scanf("%d", &map[i][j]);
-			if (map[i][j] == 9) { // 아기 상어 정보
+	ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+	cin >> n;
+	for(int i=0; i<n; i++){
+		for(int j=0; j<n; j++){
+			cin >> arr[i][j];
+			if (arr[i][j] == 9) { // 아기 상어 정보
 				baby.r = i;
 				baby.c = j;
 				baby.size = 2;
 			}
 		}
 	}
-	while (!isEnd) {
-		findPrey(baby.r, baby.c);
+
+	while(eat){
+		findFish(baby.r, baby.c);
 	}
-	printf("%d\n", Time);
+
+	cout << t;
 	return 0;
 }
