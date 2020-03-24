@@ -10,7 +10,7 @@ vector<int> solution(string msg) {
     
     for(int i=1; i<=26; i++){ // A ~ Z 까지 저장
         string  str;
-        str = i + 64;
+        str = i + 64; 
         arr.insert(make_pair(str, i));
     }
     
