@@ -1,6 +1,5 @@
-// 특정한 최단 경로
+// 네트워크 복구
 #include <iostream>
-
 using namespace std;
 
 int main(void){

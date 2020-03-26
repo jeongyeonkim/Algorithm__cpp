@@ -26,13 +26,13 @@ void notRemove(){
 }
 
 bool RemoveNum(){
-    bool check = true;
+    bool check = true; // 인접한 수 같은게 있으면 false, 없으면 true
     avg = 0, cnt = 0;
-    memset(removePosition, 0, sizeof(removePosition));
+    memset(removePosition, 0, sizeof(removePosition)); // 삭제될 숫자 포지션 저장
     for(int i=1; i<=N; i++){
         for(int j=0; j<M; j++){
             if(arr[i][j] == -1){ continue; }
-            avg += arr[i][j]; cnt++;
+            avg += arr[i][j]; cnt++; // 평균 저장
             if(j != 0){
                 if(arr[i][j] == arr[i][j-1]){
                     check = false;
@@ -40,24 +40,24 @@ bool RemoveNum(){
                     removePosition[i][j-1] = 1;
                 }
             }
-            if(arr[i-1][j] == arr[i][j]){
+            if(arr[i-1][j] == arr[i][j]){ // 맨 처음과 맨 끝 수 비교
                 check = false;
                 removePosition[i-1][j] = 1;
                 removePosition[i][j] = 1;
             }
         }
         if(arr[i][0] == -1){ continue; }
-        if(arr[i][0] == arr[i][arr[i].size()-1]){
+        if(arr[i][0] == arr[i][arr[i].size()-1]){ // 같은 위치 이전 원판과 비교
             check = false;
             removePosition[i][0] = 1;
             removePosition[i][arr[i].size()-1] = 1;
         }
     }
     avg /= cnt;
-    for(int i=1; i<=N; i++){
+    for(int i=1; i<=N; i++){ // 지워지는 숫자 -1로 입력
         deque<double> temp = arr[i];
         arr[i].clear();
-        for(int j=0; j<M; j++){
+        for(int j=0; j<M; j++){ 
             if(removePosition[i][j] == 1){ arr[i].push_back(-1); }
             else{ arr[i].push_back(temp[j]); }
         }
@@ -69,7 +69,7 @@ void Rotation(){
     int j = 0;
     while (true){
         j++;
-        int i = j*x;
+        int i = j*x; // x 배수 원판 회전
         if(i > N){ break; }
         
         for(int a=0; a<k; a++){
@@ -97,9 +97,9 @@ int main(void){
 
     while (T--){
         cin >> x >> d >> k;
-        Rotation();
-        if(RemoveNum()){
-            notRemove();
+        Rotation(); // 회전
+        if(RemoveNum()){ // 인접한 수 있는지 확인
+            notRemove(); // 인접한 수 없을 경우 평균 대소 비교
         }
     }
 
