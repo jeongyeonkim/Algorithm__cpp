@@ -1,5 +1,5 @@
 // stl 없이 선택 정렬 구현
-// 시간 복잡도 n^2
+// 시간 복잡도 best - avg - worst >>> n^2 - n^2 - n^2
 #include <iostream>
 using namespace std;
 int N;
