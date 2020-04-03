@@ -1,52 +1,50 @@
+// 테케 1개 안맞음
+// ["2016-09-15 01:00:04.002 2.0s", "2016-09-15 01:00:07.000 2s"] -> 2
 #include <iostream>
-#include <string>
-#include <vector>
 #include <sstream>
 #include <algorithm>
+#include <string>
+#include <vector>
 using namespace std;
 
-vector<string> cut(string str, char k){
+vector<string> cutString(char ch, string str){
     vector<string> arr;
     istringstream ss(str);
     string s;
-
-    while (getline(ss, s, k)){
+    while (getline(ss, s, ch)){
         arr.push_back(s);
     }
-    
     return arr;
 }
 
 int solution(vector<string> lines) {
     int answer = 0;
-    vector<int> startT;
-    vector<int> endT;
+    vector<string> str;
+    vector<int> startT, endT;
 
-    vector<string> temp;
+    int endTime = 0, startTime = 0;
+
     for(int i=0; i<lines.size(); i++){
-        temp = cut(lines[i], ' ');
-        vector<string> sec = cut(cut(temp[2], ':')[2], '.');
-        string s = sec[0] + sec[1];
+        str = cutString(' ', lines[i]);
+        
+        endTime = stoi(cutString(':', str[1])[0]) * 3600000 + stoi(cutString(':', str[1])[1]) * 60000 + stod(cutString(':', str[1])[2]) * 1000;
+        string temp = str[2].substr(0, str[2].length()-1);
+        startTime = endTime - stod(temp) * 1000; startTime--;
 
-        int endTime = stoi(cut(temp[1], ':')[0]) * 3600000 + stoi(cut(temp[1], ':')[1]) * 60000 + stof(cut(temp[1], ':')[2]) * 1000;
         endT.push_back(endTime);
-        int startTime = endTime - stof(sec[0] + sec[1])*1000 -1;
         startT.push_back(startTime);
     }
 
     for(int i=0; i<lines.size(); i++){
         int cnt = 0;
-        int startTime = startT[i] - 1000;
+        int endPoint = startT[i] + 999;
 
         for(int j=0; j<lines.size(); j++){
-            if(startTime <= startT[j] && startT[i] >= startT[j]){
-                cnt++;
-            }else if(startTime >= startT[j] && endT[j] >= startTime){
-                cnt++;
-            }
+            if(endT[j] >= startT[i] && startT[j] <= endPoint){ cnt++; }
+            else if(startT[j] <= endPoint && startT[j] >= startT[i]){ cnt++; }
         }
-
         answer = max(answer, cnt);
     }
+
     return answer;
 }
