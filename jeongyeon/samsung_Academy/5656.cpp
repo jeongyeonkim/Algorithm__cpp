@@ -11,7 +11,7 @@ struct info{
     int x, y, depth;
 };
 
-void copyArr(){
+void copyArr(){ // 배열 복사
     for(int i=0; i<X; i++){
         for(int j=0; j<Y; j++){ temp[i][j] = arr[i][j]; }
     }
@@ -22,7 +22,7 @@ int cntBrick(){ // 벽돌 이동 및 갯수 세기
     for(int i=0; i<Y; i++){
         queue<int> que;
         for(int j=X-1; j>=0; j--){
-            if(temp[j][i] != 0){ que.push(temp[j][i]); }
+            if(temp[j][i] != 0){ que.push(temp[j][i]); } // 벽돌 값 밑에서부터 담기
             temp[j][i] = 0;
         }
 
@@ -30,7 +30,7 @@ int cntBrick(){ // 벽돌 이동 및 갯수 세기
 
         int idx = X-1;
         while(!que.empty()){
-            temp[idx][i] = que.front();
+            temp[idx][i] = que.front(); // 벽돌 값 밑에서부터 넣기
             que.pop();
             idx--;
         }
@@ -84,7 +84,7 @@ void breakBrick(int cnt){ // 벽돌 부수기
         }
     }
     
-    result = min(result, cntBrick());
+    result = min(result, cntBrick()); // 남은 벽돌 최소 값 갱신
     breakBrick(cnt - 1);
 }
 
