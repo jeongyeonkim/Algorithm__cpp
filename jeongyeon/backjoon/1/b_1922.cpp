@@ -1,4 +1,5 @@
 // 네트워크 연결
+// Union find 사용
 #include <iostream>
 #include <algorithm>
 #define MAX 100001
