@@ -11,21 +11,14 @@ deque<char> arr;
 int result, maxNum;
 vector<string> num;
 
-bool ASC(string a, string b){
-    return a>b;
-}
+bool cmp(string a, string b){ return a>b; }
 
 void Decimal(string a){
     for(int i=0; i<(N/4); i++){
-        char temp = a.at(i);
-        int tempNum = 0;
-        if(temp == 'A'){ tempNum = 10; }
-        else if(temp == 'B'){ tempNum = 11; }
-        else if(temp == 'C'){ tempNum = 12; }
-        else if(temp == 'D'){ tempNum = 13; }
-        else if(temp == 'E'){ tempNum = 14; }
-        else if(temp == 'F'){ tempNum = 15; }
-        else{ tempNum = temp - '0'; }
+        int tempNum = a.at(i) - '0';
+        if(tempNum >= 17 && tempNum <= 22){ // A ~ F 값 정수 변환
+            tempNum -= 7;
+        }
 
         result += (int)pow(16, (N/4)-1-i)*tempNum;
     }
@@ -33,7 +26,7 @@ void Decimal(string a){
 
 void changeDecimal(){
     int t = N/4;
-    for(int i=0; i<N;){
+    for(int i=0; i<N;){ // 4등분한 숫자 num에 넣기
         string temp;
         for(int j=0; j<t; j++){
             temp += arr[i+j];
@@ -58,13 +51,13 @@ int main(int argc, char** argv){
             arr.push_front(arr.back());
             arr.pop_back();
         }
-        sort(num.begin(), num.end());
-        num.erase(unique(num.begin(), num.end()), num.end());
-        sort(num.begin(), num.end(), ASC);
+        sort(num.begin(), num.end()); // 오름차순 정렬
+        num.erase(unique(num.begin(), num.end()), num.end()); // 중복 제거
+        sort(num.begin(), num.end(), cmp); // 내림차순 정렬
         
-        Decimal(num[K-1]);
+        Decimal(num[K-1]); // K번째 값 16진수 10진수로 정수 변환
 
-        cout << "#" << test_case << " " << result << "\n";
+        cout << "#" << test_case << " " << result << "\n"; 
         arr.clear();
         num.clear();
         maxNum = 0;
