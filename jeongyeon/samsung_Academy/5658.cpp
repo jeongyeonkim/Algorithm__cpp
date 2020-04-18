@@ -58,10 +58,8 @@ int main(int argc, char** argv){
         Decimal(num[K-1]); // K번째 값 16진수 10진수로 정수 변환
 
         cout << "#" << test_case << " " << result << "\n"; 
-        arr.clear();
-        num.clear();
-        maxNum = 0;
-        result = 0;
+        arr.clear(); num.clear();
+        maxNum = 0; result = 0;
     }
     return 0;
 }
