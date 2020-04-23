@@ -1,4 +1,17 @@
 // 구슬 탈출2
+
+// BFS 풀이
+#include <iostream>
+using namespace std;
+
+int main(void){
+    ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+    
+}
+
+
+
+// DFS 풀이
 #include <iostream>
 #include <algorithm>
 using namespace std;
