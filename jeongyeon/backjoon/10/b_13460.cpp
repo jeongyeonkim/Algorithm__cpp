@@ -2,11 +2,91 @@
 
 // BFS 풀이
 #include <iostream>
+#include <queue>
 using namespace std;
+int N, M;
+char arr[11][11];
+pair<int, int> Red, Blue, goal;
+// 동, 남, 서, 북
+int dx[4] = {0, 1, 0, -1};
+int dy[4] = {1, 0, -1, 0};
+
+struct info{
+    int xr, yr, xb, yb, dir, cnt;
+};
 
 int main(void){
     ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-    
+    cin >> N >> M;
+    for(int i=0; i<N; i++){
+        for(int j=0; j<M; j++){
+            cin >> arr[i][j];
+            if(arr[i][j] == 'R'){ Red = make_pair(i, j); }
+            else if(arr[i][j] == 'B'){ Blue = make_pair(i, j); }
+        }
+    }
+    queue<info> que;
+    que.push({Red.first, Red.second, Blue.first, Blue.second, -1, 0});
+
+    while (!que.empty()){
+        int cnt = que.front().cnt;
+        pair<int, int> R = make_pair(que.front().xr, que.front().yr);
+        pair<int, int> B = make_pair(que.front().xb, que.front().yb);
+        int dir = que.front().dir;
+        que.pop();
+
+        if(arr[R.first][R.second] == 'O'){ // 빨간공이 구멍에 빠졌을 경우
+            if(arr[B.first][B.second] == 'O'){ continue; } // 파란 공도 빠지면 continue
+            else{ return cnt + 1; } // 빨간공만 빠진거면 return
+        }
+
+        for(int i=0; i<4; i++){
+            int nxr = R.first, nyr = R.second;
+            int nxb = B.first, nyb = B.second;
+            if(dir != -1 && dir == (dir + 2) % 4){ continue; } // 처음 굴리는게 아니면서 반대 방향으로 굴릴 경우 중복이라서 continue
+
+            while(true){ // 빨간 구슬 굴리기
+                if(arr[nxb + dx[i]][nyb + dy[i]] == '#'){ break; }
+                nxb += dx[i]; nyb += dy[i];
+                if(arr[nxb][nyb] == 'O'){ break; }
+            }
+
+            while(true){ // 파란 구슬 굴리기
+                if(arr[nxr + dx[i]][nyr + dy[i]] == '#'){ break; }
+                nxr += dx[i]; nyr += dy[i];
+                if(arr[nxr][nyr] == 'O'){ break; }
+            }
+
+            if(nxr == nxb && nyr == nyb){
+                if(arr[nxr][nyr] != 'O'){
+                    // 같은 행 일때
+                    if(R.first == B.first){
+                        if(R.second > B.second){
+                            if(i == 0){ nyb--; }
+                            else if(i == 2){ nyr++; }
+                        }else{
+                            if(i == 0){ nyr--; }
+                            else if(i == 2){ nyb++; }
+                        }
+                    }
+                    // 같은 열 일때
+                    else{
+                        if(R.first > B.first){
+                            if(i == 1){ nxb--; }
+                            else if(i == 3){ nxr++; }
+                        }else{
+                            if(i == 1){ nxr--; }
+                            else if(i == 3){ nxb++; }
+                        }
+                    }
+                }
+            }
+
+            que.push({nxr, nyr, nxb, nyb, i, cnt + 1});
+        }
+    }
+    cout << -1;
+    return 0;
 }
 
 

@@ -13,7 +13,7 @@ int solution(string word, vector<string> pages) {
         for(int w=0; w<pages[i].size(); w++){ // 대문자 소문자 변환
             if(pages[i][w] >= 'A' && pages[i][w] <= 'W'){ pages[i][w] = pages[i][w] + 'a' - 'A'; }
         }
-        
+
         int posHead = pages[i].find("<head>");
         string metaStr = pages[i].substr(posHead, pages[i].find("</head>") - posHead);
         int posHttp = metaStr.find("https://");
@@ -58,11 +58,11 @@ int solution(string word, vector<string> pages) {
     }
 
     for(int i=0; i<arr.size(); i++){
-        int sum = score[arr[i]].first;
+        float sum = score[arr[i]].first;
         for(int j=0; j<score[arr[i]].second.size(); j++){ // 링크 점수
             sum += score[score[arr[i]].second[j]].first / score[arr[i]].second.size();
         }
-
+        cout << sum << "\n";
         if(maxScore < sum){
             maxScore = sum;
             maxPos = i;
