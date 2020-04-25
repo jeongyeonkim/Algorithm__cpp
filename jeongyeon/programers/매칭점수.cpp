@@ -1,70 +1,71 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include <algorithm>
 #include <map>
 using namespace std;
-map<string, pair <int, vector<string> > > score;
-vector<string> arr;
+map<string, double> score, linkID; // 단어 갯수 저장, url 인덱스 값 저장
+vector<string> arr, link[21]; // url값 순서대로 저장, 외부 링크 저장
+
 int maxPos, maxScore;
 
 int solution(string word, vector<string> pages) {
     int answer = 0;
+    transform(word.begin(), word.end(), word.begin(), ::tolower);
     for(int i=0; i<pages.size(); i++){
-        for(int w=0; w<pages[i].size(); w++){ // 대문자 소문자 변환
-            if(pages[i][w] >= 'A' && pages[i][w] <= 'W'){ pages[i][w] = pages[i][w] + 'a' - 'A'; }
+        transform(pages[i].begin(), pages[i].end(), pages[i].begin(), ::tolower); // 대문자 -> 소문자 변환
+        string p = pages[i];
+
+        int posHead = p.find("<meta property=");
+        posHead = p.find("og:url", posHead);
+        posHead = p.find("http", posHead);
+        int posHttpE = p.find('"', posHead);
+        string id = p.substr(posHead, posHttpE - posHead);
+        arr.push_back(id); // 본인 주소
+        linkID.insert(make_pair(id, i));
+        
+        int posBody = p.find("<body>");
+        string bodyStr = p.substr(posBody, p.find("</body>") - posBody);
+
+        int idx = 0;
+        while (true){ // 단어 개수 세기
+            idx = bodyStr.find(word, idx);
+            if(idx < 0){ break; }
+            if((bodyStr[idx - 1] >= 'a' && bodyStr[idx - 1] <= 'z') || (bodyStr[idx + word.length()] >= 'a' && bodyStr[idx + word.length()] <= 'z')){}
+            else{
+                score[id]++;
+            }
+            idx++;
         }
 
-        int posHead = pages[i].find("<head>");
-        string metaStr = pages[i].substr(posHead, pages[i].find("</head>") - posHead);
-        int posHttp = metaStr.find("https://");
-        string id = metaStr.substr(posHttp + 8, metaStr.find("/>") - (posHttp + 8));
-        arr.push_back(id);
-
-        int posBody = pages[i].find("<body>") + 6;
-        string bodyStr = pages[i].substr(posBody, pages[i].find("</body>") - posBody);
-        bool urlCheck = false;
-        for(int j=posBody; j<posBody + bodyStr.length(); j++){
-            if(pages[i][j] == '<'){ urlCheck = true; }
-            else if(pages[i][j] == '>'){ urlCheck = false; }
-
-            if(!urlCheck){ // 단어 개수 세기
-                int idx = j;
-                while (pages[i].find(word, idx) != string::npos){
-                    if(idx >= posBody + bodyStr.length()){ break; }
-                    idx = pages[i].find(word, idx);
-                    bool check = true;
-                    if(idx > 0 && pages[i][idx-1] >= 'a' && pages[i][idx-1] <= 'z'){ check = false; }
-                    if(idx < pages[i].size()-1 && pages[i][idx+word.length()+1] >= 'a' && pages[i][idx+word.length()+1] <= 'z'){ check = false; }
-
-                    if(check){
-                        score[id].first++;
-                        idx += word.length();
-                    }
-                }
-                
-            }else{ // 외부 링크 개수 세기
-                int idx = j;
-                while (bodyStr.find("https://", idx) != string::npos) {
-                    idx =  bodyStr.find("https://", idx);
-
-                    if(idx >= bodyStr.length()){ break; }
-                    string otherURL;
-                    for(int k=idx; k!='"'; k++){ otherURL += bodyStr[k]; }
-                    score[id].second.push_back(otherURL);
-                    idx += 8;
-                }
-            }
+        idx = 0;
+        while (true){
+            idx = bodyStr.find("<a href=\"", idx);
+            if(idx < 0){ break; }
+            idx += 9;
+            int urlE = bodyStr.find('"', idx);
+            string anotherURL = bodyStr.substr(idx, urlE-idx);
+            link[i].push_back(anotherURL);
+            idx += anotherURL.length();
         }
     }
 
+    double sum[arr.size()+1];
+    memset(sum, 0, sizeof(sum));
+    
     for(int i=0; i<arr.size(); i++){
-        float sum = score[arr[i]].first;
-        for(int j=0; j<score[arr[i]].second.size(); j++){ // 링크 점수
-            sum += score[score[arr[i]].second[j]].first / score[arr[i]].second.size();
+        sum[i] += score[arr[i]];
+        for(int j=0; j<link[i].size(); j++){
+            if(linkID.find(link[i][j]) != linkID.end()){
+                int url_id = linkID[link[i][j]];
+                if(link[i].size() == 0){ break; }
+                sum[url_id] += (double)score[arr[i]] / (double)link[i].size();
+            }
         }
-        cout << sum << "\n";
-        if(maxScore < sum){
-            maxScore = sum;
+    }
+    for(int i=0; i<arr.size(); i++){
+        if(maxScore < sum[i]){
+            maxScore = sum[i];
             maxPos = i;
         }
     }

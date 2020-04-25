@@ -1,41 +1,46 @@
 // 달이 차오른다, 가자
+// BFS + bitmask
+// 방문 시 어떤 키를 가지고 있는지에 따라서 다른 값 나옴.
 #include <iostream>
-#include <algorithm>
-#include <string.h>
+#include <queue>
 using namespace std;
-int N, M, result = 1e9;
+int N, M, result;
 char arr[51][51];
-pair<int, int> start, goal;
-int dp[51][51][1<<24];
-int dx[4] = {0, 0, 1, -1};
-int dy[4] = {1, -1, 0, 0};
+int visited[51][51][64]; // a, b, c, d, e, f -> 열쇠 6개 2^6 = 64
+int dx[4] = {0, 1, 0, -1};
+int dy[4] = {1, 0, -1, 0};
 
-void tsp(int x, int y, int visited){
-    if(arr[x][y] == '1'){
-        result = min(result, dp[x][y][visited]);
-        return;
-    }
+struct info{
+    int x, y, k;
+};
+queue<info> que;
 
-    for(int i=0; i<4; i++){
-        int nx = x + dx[i];
-        int ny = y + dy[i];
-        int num = 0;
-        bool check = false;
+int bfs(){
+    while (!que.empty()){
+        int x = que.front().x;
+        int y = que.front().y;
+        int k = que.front().k;
+        que.pop();
 
-        if(nx < 0 || ny < 0 || nx >=N || ny >= M || arr[nx][ny] == '#'){ continue; }
-        if(arr[nx][ny] >= 'A' && arr[nx][ny] <= 'Z'){
-            for(int j=0; j<24; j++){
-                if(arr[nx][ny]-65 == j){ check = true; }
+        for(int i=0; i<4; i++){
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            int nk = k;
+            if(nx < 0 || ny < 0 || nx >= N || ny >= M || arr[nx][ny] == '#' || visited[nx][ny][nk] != 0){  continue; }
+
+            if(arr[nx][ny] >= 'a' && arr[nx][ny] <= 'f'){ // 열쇠 추가
+                nk |= (1 << arr[nx][ny] - 'a');
             }
+            else if(arr[nx][ny] >= 'A' && arr[nx][ny] <= 'F'){
+                if(!(nk & (1 << arr[nx][ny] - 'A'))){ continue; } // 열쇠 없으면 continue
+            }
+
+            que.push({nx, ny, nk});
+            visited[nx][ny][nk] = visited[x][y][k] + 1;
+            if(arr[nx][ny] == '1'){ return visited[nx][ny][nk]; }
         }
-        if(!check){ continue; }
-        if(arr[nx][ny] >= 'a' && arr[nx][ny] <= 'z'){
-            num = arr[nx][ny] - 97;
-        }
-        if(dp[nx][ny][visited + num] != 0){ continue; }
-        dp[nx][ny][visited + num] = dp[x][y][visited] + 1;
-        tsp(nx, ny, visited + num);
     }
+    return -1;
 }
 
 int main(void){
@@ -44,12 +49,10 @@ int main(void){
     for(int i=0; i<N; i++){
         for(int j=0; j<M; j++){
             cin >> arr[i][j];
-            if(arr[i][j] == '0'){ start = make_pair(i, j); }
+            if(arr[i][j] == '0'){ que.push({i, j, 0}); }
         }
     }
-    memset(dp, -1, sizeof(dp));
-    tsp(start.first, start.second, 0);
-    if(result == 1e9){ result = -1; }
-    cout << result;
+
+    cout << bfs();
     return 0;
 }
