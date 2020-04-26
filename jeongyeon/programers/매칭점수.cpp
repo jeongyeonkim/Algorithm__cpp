@@ -1,3 +1,5 @@
+// 테케 8번, 17번 통과 못함
+
 #include <iostream>
 #include <string.h>
 #include <vector>
