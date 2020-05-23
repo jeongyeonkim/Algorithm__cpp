@@ -36,7 +36,6 @@ int main(void){
     
     for(int i=0; i<N; i++){ // 모든 지점에서 시작해서 사이클 만들어 지는지 체크
         for(int j=0; j<M; j++){
-            memset(visited, 0, sizeof(visited));
             check = false;
             dfs(i, j, i, j, 1);
             if(check){ break; }

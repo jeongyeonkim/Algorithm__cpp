@@ -20,9 +20,9 @@ bool castle(){
             int nx = x + dx[j];
             int ny = y + dy[j];
             if(nx < 0 || ny < 0 || nx >= N || ny >= M){ continue; }
-            if(arr[nx][ny] > 0){
+            if(arr[nx][ny] > 0){ // 파도가 깍을 수 있는 모래성 -1
                 arr[nx][ny]--;
-                if(!arr[nx][ny]){
+                if(!arr[nx][ny]){ // 아예 없어지는 곳이면 파도에 push
                     pos.push(make_pair(nx, ny));
                 }
             }
