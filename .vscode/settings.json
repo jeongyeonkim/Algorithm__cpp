@@ -20,6 +20,9 @@
         "vector": "cpp",
         "ios": "cpp",
         "ratio": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "__string": "cpp",
+        "algorithm": "cpp",
+        "*.tcc": "cpp"
     }
 }
