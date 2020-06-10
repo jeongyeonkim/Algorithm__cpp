@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * @author jeongyeonkim
- *
- */
-module Algorithm {
-}
