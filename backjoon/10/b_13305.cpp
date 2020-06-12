@@ -23,4 +23,4 @@ int main(void){
 
     cout << dp[N-1];
     return 0;
-} 
+}
