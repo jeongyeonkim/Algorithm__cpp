@@ -23,6 +23,7 @@
         "utility": "cpp",
         "__string": "cpp",
         "algorithm": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "ostream": "cpp"
     }
 }
