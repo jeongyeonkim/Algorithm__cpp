@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class Main {
+public class b_2667 {
     public static ArrayList<Integer> result = new ArrayList<Integer>();
     public static int N, cnt;
     static int[][] arr, visited;
