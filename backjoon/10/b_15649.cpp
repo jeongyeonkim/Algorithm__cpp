@@ -5,7 +5,7 @@ int N, M;
 int visit[9];
 int arr[9];
 
-void function(int c){
+void Function(int c){
     if (c == M){
 		for (int i = 0; i < M; i++)
 			cout << arr[i] << " ";
@@ -16,7 +16,7 @@ void function(int c){
 		if (!visit[i]){
 			visit[i] = 1;
 			arr[c] = i;
-			function(c + 1);
+			Function(c + 1);
 			visit[i] = 0;
 		}
 	}
@@ -24,6 +24,6 @@ void function(int c){
 
 int main(){
     cin >> N >> M;
-    function(0);
+    Function(0);
     return 0;
 }
