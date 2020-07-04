@@ -1,4 +1,5 @@
 // 컬러볼
+// 투포인터로 풀기
 #include <iostream>
 #include <vector>
 #include <algorithm>
