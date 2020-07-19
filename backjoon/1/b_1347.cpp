@@ -22,7 +22,7 @@ int main(void){
     for(int i=0; i<N; i++){
         if(str[i] == 'R'){ dir = (dir + 1) % 4; }
         else if(str[i] == 'L'){ dir = (dir + 3) % 4; }
-        else if(str[i] == 'F'){
+        else if(str[i] == 'F'){ // 움직일 때마다 가능한 x,y좌표의 최대 최소값 저장 -> 직사각형을 이루면서 출력하기 위해
             x += dx[dir];
             y += dy[dir];
             arr[x][y] = 0;
