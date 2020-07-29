@@ -25,6 +25,7 @@
         "algorithm": "cpp",
         "*.tcc": "cpp",
         "ostream": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "type_traits": "cpp"
     }
 }
