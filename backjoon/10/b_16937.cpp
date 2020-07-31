@@ -1,4 +1,14 @@
 // 두 스티커
+/*
+1. 두 개의 스티커 고르기 -> 이중 for문으로 선택 (중복 x)
+2. 각각의 x, y 길이 비교
+    case 1 : - -
+    case 2 : | |
+    case 3 : - |
+    case 4 : -
+             |
+    위의 4가지 케이스 * 2 -> 90도 회전할 경우  >>> 90도 회전은 H, W 스와프로 처리
+*/
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -17,11 +27,11 @@ void put(int i, int j){
             else if(x1 <= H && x2 <= H && y1 + y2 <= W){ flag = true; }
             swap(x2, y2);
         }
-        
+
         swap(H, W);
     }
     
-    if(flag){
+    if(flag){ // 가능한게 있을 경우 result 최대 값으로 갱신
         result = max(result,  sticker[i].first*sticker[i].second + sticker[j].first*sticker[j].second);
     }
 }
@@ -36,7 +46,7 @@ int main(void){
         sticker.push_back(make_pair(input1, input2));
     }
 
-    for(int i=0; i<sticker.size() - 1; i++){
+    for(int i=0; i<sticker.size() - 1; i++){ // 중복x 조합
         for(int j=i+1; j<sticker.size(); j++){
             put(i, j);
         }
