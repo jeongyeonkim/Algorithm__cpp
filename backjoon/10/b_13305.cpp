@@ -1,4 +1,6 @@
 // 주유소
+// dp 사용
+// 이동할 때마다 가장 작은 주유소 가격에서 기름 채우기
 #include <iostream>
 #include <algorithm>
 using namespace std;
