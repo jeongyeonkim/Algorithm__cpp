@@ -1,6 +1,8 @@
-// 로직 다시 짜기
-// 테케 16, 30 틀림
-
+/*
+    1. split을 사용하여 시작 시간, 종료 시간, 노래 제목, 멜로디로 나누기
+    2. find 함수를 쓰기 위해 모든 #붙여진 멜로디 환산하기 (changeString함수)
+    3. 재생 시간 구한 후 멜로디 재생 시간 길이로 만든 후 m이 포함되어 있는지 아닌지 여부 판단
+ */
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -38,24 +40,6 @@ string changeString(string str){ // #붙은거 단위 환산 ex) C# -> c
     return tmp;
 }
 
-bool checkSong(string shortSong, string longSong){
-    int pos = longSong.find(shortSong);
-    int idx = pos + shortSong.length();
-    int shortIdx = 0;
-    bool res = true;
-    while (true){
-        if(idx == pos){ break; }
-        if(longSong[idx] != shortSong[shortIdx]){
-            res = false;
-            break;
-        }
-        idx++; shortIdx++;
-        idx %= longSong.length();
-        shortIdx %= shortSong.length();
-    }
-    return res;
-}
-
 string solution(string m, vector<string> musicinfos) {
     m = changeString(m);
     
@@ -65,33 +49,13 @@ string solution(string m, vector<string> musicinfos) {
         song[3] = changeString(song[3]);
         song_time = playSongTime(song[0], song[1]);
 
-        if(song[3].length() == m.length()){ // 서로 같은 길이일 경우, 어느 부분부터 시작한지를 모르니까 m의 첫 시작점부터 같은게 있는지 다 비교
-            int idx = 0;
-            while (true){
-                if(check || idx >= m.length()){ break; }
-                if(song[3].find(m[0], idx) != string::npos){
-                    int startPos = song[3].find(m[0], idx);
-
-                    if(m.substr(0, m.length() - startPos).compare(song[3].substr(startPos, m.length() - startPos)) == 0){
-                        if(m.substr(m.length() - startPos, startPos).compare(song[3].substr(0, startPos)) == 0){
-                            check = true;
-                        }
-                    }
-                }
-                idx++;
+        if(res_song_time < song_time){
+            string temp = "";
+            for(int j=0; j<song_time; j++){
+                temp += song[3][j % song[3].length()];
             }
-        }
-        else if(song[3].length() < m.length()){
-            if(checkSong(song[3], m)){ check = true; }
-        }
-        else{
-            string tempSong = song[3];
-            tempSong += song[3].substr(0, m.length());
-            if(tempSong.find(m) != string::npos){ check = true; }
-        }
 
-        if(check){ // 같은 노래일때
-            if(song_time > res_song_time){ // 재생 시간이 이전 곡보다 더 길 경우
+            if(temp.find(m) >= 0 && temp.find(m) < temp.length()){
                 res_song_time = song_time;
                 res_song_name = song[2];
             }
