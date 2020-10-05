@@ -5,37 +5,14 @@
 using namespace std;
 int R, C, resultTime;
 string input;
-char _map[1001][1001], tmpMap[1001][1001];;
+int _map[1001][1001];
 int dx[4] = {0, 1, 0, -1};
 int dy[4] = {1, 0, -1, 0};
-pair<int, int> startJ;
 
 struct Info{
     int x, y;
 };
-
-void spreadFire(){
-    for(int i=0; i<R; i++){
-        for(int j=0; j<C; j++){
-            if(_map[i][j] == 'F'){
-                tmpMap[i][j] = 'F';
-                for(int d=0; d<4; d++){
-                    int ni = i + dx[d];
-                    int nj = j + dy[d];
-                    if(ni < 0 || nj < 0 || ni >= R || nj >= C){ continue; }
-                    if(_map[ni][nj] == '.'){ tmpMap[ni][nj] = 'F'; }
-                }
-            }
-            else if(_map[i][j] == 'J'){ tmpMap[i][j] = 'J'; }
-            else if(_map[i][j] == '#'){ tmpMap[i][j] = '#'; }
-            else if(_map[i][j] == '.'){ tmpMap[i][j] = '.'; }
-        }
-    }
-
-    for(int i=0; i<R; i++){
-        for(int j=0; j<C; j++){ _map[i][j] = tmpMap[i][j]; }
-    }
-}
+queue<Info> que_fire, que_J;
 
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
@@ -43,42 +20,58 @@ int main(){
     for(int i=0; i<R; i++){
         cin >> input;
         for(int j=0; j<C; j++){
-            if(input[j] == 'J'){ startJ = {i, j}; }
-            _map[i][j] = input[j];
+            if(input[j] == '#'){ _map[i][j] = 1; }
+            else if(input[j] == 'J'){ que_J.push({i, j}); }
+            else if(input[j] == 'F'){
+                _map[i][j] = 1;
+                que_fire.push({i, j});
+            }
         }
     }
-    queue<Info> que;
-    que.push({startJ.first, startJ.second});
+
     int cnt = 0;
-
-    while (!que.empty()){
-        int queSize = que.size();
+    while (true){
         cnt++;
-        bool flag = false;
-        spreadFire();
+        int queSize_fire = que_fire.size();
+        if(resultTime != 0){ break; }
+        while (queSize_fire--){
+            int x = que_fire.front().x;
+            int y = que_fire.front().y;
+            que_fire.pop();
 
-        for(int i=0; i<queSize; i++){
-            int x = que.front().x;
-            int y = que.front().y;
-            que.pop();
+            for(int i=0; i<4; i++){
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                if(nx < 0 || ny < 0 || nx >= R || ny >= C || _map[nx][ny] == 1){ continue; }
+                _map[nx][ny] = 1;
+                que_fire.push({nx, ny});
+            }
+        }
 
-            if(x <= 0 || y <= 0 || x >= R-1 || y >= C-1){
-                flag = true;
+        int queSize_J = que_J.size();
+        if(queSize_J == 0){ break; }
+        while (queSize_J--){
+            int x = que_J.front().x;
+            int y = que_J.front().y;
+            que_J.pop();
+
+            if(x < 0 || y < 0 || x > R-1 || y > C-1){
                 resultTime = cnt;
                 break;
             }
 
-            for(int j=0; j<4; j++){
-                int nx = x + dx[j];
-                int ny = y + dy[j];
-                if(nx < 0 || ny < 0 || nx >= R || ny >= C ){ continue; }
-                if(_map[nx][ny] == '.'){
-                    que.push({nx, ny});
-                    _map[nx][ny] = 'J';
+            for(int i=0; i<4; i++){
+                int nx = x + dx[i]; 
+                int ny = y + dy[i];
+                if(nx < 0 || ny < 0 || nx >= R || ny >= C){
+                    resultTime = cnt;
+                    break;
                 }
+                if(_map[nx][ny] == -1 || _map[nx][ny] == 1){ continue; }
+                _map[nx][ny] = -1;
+                que_J.push({nx, ny});
             }
         }
-        if(flag){ break; }
     }
     
     if(resultTime == 0){ cout << "IMPOSSIBLE"; }
