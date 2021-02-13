@@ -1,7 +1,10 @@
 #include <iostream>
 #include <string>
+#include <stack>
 using namespace std;
-
+// 0ms 6.4KB
+// 1. string 내 # 나오면 이전 문자 지움
+// 2. S, T 모두 1 진행 후 값 비교
 string findWord(string str){
     string result = "";
 
@@ -9,7 +12,6 @@ string findWord(string str){
         if(str[i] == '#' && result.compare("")){
             result = result.substr(0, result.length() - 1);
         } else if(str[i] != '#'){
-            
             result += str[i];
         }
     }
@@ -18,12 +20,8 @@ string findWord(string str){
 }
 
 bool backspaceCompare(string S, string T) {
-    S = findWord(S);
-    T = findWord(T);
-    cout << S << "\n";
-    cout << T << "\n";
 
-    return (S.compare(T) == 0);
+    return (findWord(S).compare(findWord(T)) == 0);
 }
 
 int main(){
