@@ -1,6 +1,7 @@
 // 리모컨
 #include <iostream>
 #include <algorithm>
+#include <string.h>
 using namespace std;
 int N, M, input, result;
 bool btn[10];
@@ -35,19 +36,19 @@ int main(){
 
     int cnt = -1;
     while (++cnt <= result){
+        bool flag = false;
         if(ismakeit(N + cnt)){
             result = min(result, cnt + lineNum(N + cnt));
-            break;
+            flag = true;
         }
-    }
-
-    cnt = -1;
-    while (++cnt <= result && N - cnt >= 0){
-        if(ismakeit(N - cnt)){
+        if(N - cnt >= 0 && ismakeit(N - cnt)){
             result = min(result, cnt + lineNum(N - cnt));
-            break;
+            flag = true;
         }
+
+        if(flag){ break; }
     }
+    
     cout << result;
     return 0;
 }
